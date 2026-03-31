@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>父子 1-on-1 對談指引</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  header {
+    background: #1a1a2e;
+    color: white;
+    padding: 20px 16px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  header h1 { font-size: 18px; font-weight: 700; }
+  header p { font-size: 13px; color: #aaa; margin-top: 2px; }
+
+  .tabs {
+    display: flex;
+    background: #16213e;
+    padding: 0 16px;
+    position: sticky;
+    top: 66px;
+    z-index: 99;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    color: white;
+    border-bottom-color: #e94560;
+  }
+
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .card-header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: #888;
+    margin-top: 1px;
+  }
+
+  .chevron {
+    color: #ccc;
+    font-size: 18px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .card.open .chevron { transform: rotate(90deg); }
+
+  .card-body {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .card.open .card-body { display: block; }
+
+  /* Content styles */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    margin: 16px 0 8px;
+  }
+
+  .section-label:first-child { margin-top: 12px; }
+
+  .question-block {
+    background: #f8f9ff;
+    border-left: 3px solid #4a6cf7;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+
+  .question-text {
+    font-size: 15px;
+    color: #1a1a1a;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .question-note {
+    font-size: 12px;
+    color: #888;
+    margin-top: 6px;
+  }
+
+  .tip-block {
+    background: #fff8e8;
+    border-left: 3px solid #f0a500;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #5a4a00;
+  }
+
+  .warn-block {
+    background: #fff0f0;
+    border-left: 3px solid #e94560;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #5a0020;
+  }
+
+  .followup {
+    font-size: 13px;
+    color: #555;
+    padding: 8px 0 0 4px;
+    border-top: 1px dashed #e0e0e0;
+    margin-top: 8px;
+  }
+
+  .followup strong { color: #333; }
+
+  .time-badge {
+    background: #f0f0f0;
+    color: #666;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .checklist { padding: 0; list-style: none; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 14px;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-circle {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .check-circle.checked {
+    background: #4a6cf7;
+    border-color: #4a6cf7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+  }
+  .checklist li.checked-item > span { color: #aaa; text-decoration: line-through; }
+
+  .observe-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 14px;
+  }
+  .observe-item:last-child { border-bottom: none; }
+  .observe-label { font-weight: 600; color: #333; margin-bottom: 3px; }
+  .observe-desc { font-size: 13px; color: #666; }
+
+  /* Color themes */
+  .teen15 .card-icon { background: #e8f0ff; }
+  .teen12 .card-icon { background: #e8fff0; }
+  .prep .card-icon { background: #fff8e8; }
+
+  .teen15 .card-header-left .card-title { color: #1a3a8f; }
+  .teen12 .card-header-left .card-title { color: #1a6b3a; }
+
+  /* Summary banner */
+  .summary-banner {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .summary-banner h2 { font-size: 15px; margin-bottom: 10px; color: #e0e0e0; }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 14px;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row span:first-child { color: #aaa; }
+  .summary-row span:last-child { font-weight: 600; color: white; }
+
+  .after-card {
+    background: #1a2e1a;
+    color: #e0ffe0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .after-card h3 { font-size: 14px; margin-bottom: 10px; color: #80ff80; }
+  .after-card li { font-size: 14px; padding: 5px 0; color: #c0e0c0; }
+  .after-card ul { padding-left: 18px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>父子 1-on-1 對談指引</h1>
+  <p>本週對談 · 網路規則 · 時間自主</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('prep')">準備</div>
+  <div class="tab" onclick="switchTab('teen15')">15 歲</div>
+  <div class="tab" onclick="switchTab('teen12')">12 歲</div>
+  <div class="tab" onclick="switchTab('after')">對談後</div>
+</div>
+
+<!-- ===== TAB: 準備 ===== -->
+<div class="page active" id="tab-prep">
+
+  <div class="summary-banner">
+    <h2>本週背景</h2>
+    <div class="summary-row"><span>孩子反應</span><span>對網路限制表達不滿</span></div>
+    <div class="summary-row"><span>您的回應</span><span>先思考，再對談</span></div>
+    <div class="summary-row"><span>核心目標</span><span>聆聽，不宣布決定</span></div>
+    <div class="summary-row"><span>15 歲對談</span><span>40–50 分鐘</span></div>
+    <div class="summary-row"><span>12 歲對談</span><span>25–35 分鐘</span></div>
+  </div>
+
+  <!-- 心態準備 -->
+  <div class="card prep open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">🧘</div>
+        <div>
+          <div class="card-title">心態準備</div>
+          <div class="card-subtitle">對談前複習</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="section-label">問自己這三個問題</div>
+      <ul class="checklist" id="mindset-list">
+        <li>
+          <div class="check-circle" onclick="toggleCheck(this)"></div>
+          <span>今天我能保持好奇心，而不是防衛心嗎？</span>
+        </li>
+        <li>
+          <div class="check-circle" onclick="toggleCheck(this)"></div>
+          <span>如果他說的話讓我不舒服，我能先聽完再回應嗎？</span>
+        </li>
+        <li>
+          <div class="check-circle" onclick="toggleCheck(this)"></div>
+          <span>我願意讓他的答案真正影響我的決定嗎？</span>
+        </li>
+      </ul>
+
+      <div class="section-label">記住這次對談的精神</div>
+      <div class="tip-block">
+        不是宣布決定，而是真正聆聽，並一起思考。
+      </div>
+
+      <div class="warn-block">
+        不要在這次對談中給出最終答案。<br>給自己和他幾天時間。
+      </div>
+    </div>
+  </div>
+
+  <!-- 環境建議 -->
+  <div class="card prep">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">📍</div>
+        <div>
+          <div class="card-title">環境建議</div>
+          <div class="card-subtitle">地點 · 時機 · 氛圍</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="section-label">15 歲</div>
+      <div class="tip-block">
+        散步、開車兜風、或一起做點事（買東西、洗碗）<br>
+        <strong>減少面對面壓力</strong>，他會更願意說話
+      </div>
+
+      <div class="section-label">12 歲</div>
+      <div class="tip-block">
+        比較輕鬆的空間，可以有零食或飲料<br>
+        <strong>讓氣氛不那麼正式</strong>
+      </div>
+
+      <div class="section-label">通用原則</div>
+      <ul class="checklist">
+        <li>
+          <div class="check-circle" onclick="toggleCheck(this)"></div>
+          <span>關閉手機通知</span>
+        </li>
+        <li>
+          <div class="check-circle" onclick="toggleCheck(this)"></div>
+          <span>不被弟弟／哥哥打斷</span>
+        </li>
+        <li>
+          <div class="check-circle" onclick="toggleCheck(this)"></div>
+          <span>選雙方精神狀態都好的時間</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 您的核心擔心 -->
+  <div class="card prep">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">💡</div>
+        <div>
+          <div class="card-title">您真正在意的事</div>
+          <div class="card-subtitle">清楚自己的出發點</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="section-label">三個核心關切</div>
+      <div class="observe-item">
+        <div class="observe-label">對真實生活保有興趣</div>
+        <div class="observe-desc">閱讀、現實體驗、非數位世界</div>
+      </div>
+      <div class="observe-item">
+        <div class="observe-label">自我規劃時間的能力</div>
+        <div class="observe-desc">內在動機，不靠外部管控</div>
+      </div>
+      <div class="observe-item">
+        <div class="observe-label">家庭貢獻的意願</div>
+        <div class="observe-desc">不是因為規定，而是自願；減輕媽媽負擔</div>
+      </div>
+
+      <div class="section-label">提醒自己</div>
+      <div class="tip-block">
+        WiFi 限速能控制行為，<strong>但無法培養內在動機</strong>。<br>
+        這次對談的目標是理解，不是說服。
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== TAB: 15 歲 ===== -->
+<div class="page" id="tab-teen15">
+
+  <div class="summary-banner">
+    <h2>15 歲對談概覽</h2>
+    <div class="summary-row"><span>總時間</span><span>40–50 分鐘</span></div>
+    <div class="summary-row"><span>核心特質</span><span>要快速答案、渴望自主、意見強</span></div>
+    <div class="summary-row"><span>本次重點</span><span>聆聽他的版本，不急著給答案</span></div>
+  </div>
+
+  <!-- 開場 -->
+  <div class="card teen15 open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">👋</div>
+        <div>
+          <div class="card-title">開場</div>
+          <div class="card-subtitle">承認，不辯解</div>
+        </div>
+      </div>
+      <div class="time-badge">5–10 分</div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「你之前說的話我一直在想。我沒有當場回答，是因為我想認真聽你說的，不想隨便給你一個答覆。」</div>
+      </div>
+      <div class="tip-block">
+        停頓，讓他有空間回應。<br>
+        如果他有話說，先聽完，不要急著繼續說。
+      </div>
+    </div>
+  </div>
+
+  <!-- 問題一 -->
+  <div class="card teen15">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">🌅</div>
+        <div>
+          <div class="card-title">問題一</div>
+          <div class="card-subtitle">他理想中的一天</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「如果家裡完全沒有任何限制，你理想中的一天是怎麼過的？從早到晚，想到什麼說什麼。」</div>
+      </div>
+
+      <div class="section-label">您的任務</div>
+      <div class="warn-block">
+        只聽，不評論。<br>
+        不要說「但是」「可是」「你難道不覺得」。
+      </div>
+
+      <div class="section-label">可以說的追問</div>
+      <div class="tip-block">「然後呢？」「還有嗎？」「說清楚一點？」</div>
+
+      <div class="section-label">注意觀察</div>
+      <div class="observe-item">
+        <div class="observe-desc">他的理想一天裡，有沒有任何非數位的活動？</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 問題二 -->
+  <div class="card teen15">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">⚖️</div>
+        <div>
+          <div class="card-title">問題二</div>
+          <div class="card-subtitle">他認為公平的規則</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「如果是你來設計這個家的網路規則，你覺得什麼是合理的？包括你和弟弟，你會怎麼設計？」</div>
+      </div>
+
+      <div class="tip-block">
+        認真記下他說的。<br>
+        就算您不完全同意，也先點頭。
+      </div>
+    </div>
+  </div>
+
+  <!-- 問題三 -->
+  <div class="card teen15">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">❤️</div>
+        <div>
+          <div class="card-title">問題三</div>
+          <div class="card-subtitle">說出您的擔心</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「我想讓你知道我真正擔心的是什麼。不是你玩遊戲或看 YouTube 本身，我擔心的是——你對網路以外的事情還有沒有興趣？閱讀、真實的體驗、跟真實的人的連結。你覺得呢？你自己感覺到這件事嗎？」</div>
+      </div>
+      <div class="tip-block">
+        這是真誠的問題，不是陷阱。<br>讓他思考和回答。
+      </div>
+    </div>
+  </div>
+
+  <!-- 問題四 -->
+  <div class="card teen15">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">🏠</div>
+        <div>
+          <div class="card-title">問題四</div>
+          <div class="card-subtitle">媽媽的負擔</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「還有一件事我想說。媽媽每天要花很多精力在管這些事，這對她很累。我希望我們家不需要靠她每天不斷提醒和管理。你覺得你能做到什麼，讓她輕鬆一點？」</div>
+      </div>
+      <div class="section-label">觀察</div>
+      <div class="observe-item">
+        <div class="observe-desc">他對媽媽的負擔有沒有反應？是否有同理心出現？</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結尾 -->
+  <div class="card teen15">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">🤝</div>
+        <div>
+          <div class="card-title">結尾</div>
+          <div class="card-subtitle">提議試驗，非宣布決定</div>
+        </div>
+      </div>
+      <div class="time-badge">5–10 分</div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「我今天聽到很多，我需要再想想。但我想提一個方向：我們來試一個月。你提一個你覺得合理的方案，我會認真考慮。一個月後我們再坐下來看結果怎麼樣。你願意試試看嗎？」</div>
+      </div>
+      <div class="warn-block">
+        不要在這次對談中給出最終答案。<br>給自己和他幾天時間。
+      </div>
+
+      <div class="section-label">這週觀察重點</div>
+      <div class="observe-item">
+        <div class="observe-label">他認真討論還是敷衍？</div>
+      </div>
+      <div class="observe-item">
+        <div class="observe-label">理想一天裡有非數位活動嗎？</div>
+      </div>
+      <div class="observe-item">
+        <div class="observe-label">對媽媽的負擔有沒有反應？</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== TAB: 12 歲 ===== -->
+<div class="page" id="tab-teen12">
+
+  <div class="summary-banner">
+    <h2>12 歲對談概覽</h2>
+    <div class="summary-row"><span>總時間</span><span>25–35 分鐘</span></div>
+    <div class="summary-row"><span>核心特質</span><span>需要公平感、被看見、可能跟著哥哥走</span></div>
+    <div class="summary-row"><span>本次重點</span><span>找出他自己的想法，給他具體的期待</span></div>
+  </div>
+
+  <!-- 開場 -->
+  <div class="card teen12 open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">😊</div>
+        <div>
+          <div class="card-title">開場</div>
+          <div class="card-subtitle">先連結，再談事情</div>
+        </div>
+      </div>
+      <div class="time-badge">5 分</div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「最近學校怎麼樣？有什麼好玩的事嗎？」</div>
+        <div class="question-note">花幾分鐘真正聽他說學校的事，不要急著進入主題</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 問題一 -->
+  <div class="card teen12">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">💬</div>
+        <div>
+          <div class="card-title">問題一</div>
+          <div class="card-subtitle">他自己的感受</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「你之前說感覺不自由。你最不舒服的是哪一部分？幫我了解一下。」</div>
+      </div>
+
+      <div class="section-label">聽完後說</div>
+      <div class="tip-block">
+        「我聽到了。這感覺很不好，我理解。」<br>
+        <strong>不需要立刻解釋或辯護。</strong>
+      </div>
+
+      <div class="section-label">觀察</div>
+      <div class="observe-item">
+        <div class="observe-desc">他有自己的想法，還是完全跟著哥哥？</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 問題二 -->
+  <div class="card teen12">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">🎯</div>
+        <div>
+          <div class="card-title">問題二</div>
+          <div class="card-subtitle">他最想改的一件事</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「如果可以改一件事，你最希望改什麼？」</div>
+        <div class="question-note">他的答案可能很具體（「我想打 Switch」），這很好，具體的可以具體討論</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 問題三 -->
+  <div class="card teen12">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">✅</div>
+        <div>
+          <div class="card-title">問題三</div>
+          <div class="card-subtitle">三件事的提案</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「我想問你一個問題，你認真想一想。如果每天你能做到這三件事：作業完成、做一件家事、讀 20 分鐘的書，然後剩下的時間你自己決定要怎麼用——你覺得你做得到嗎？」</div>
+      </div>
+
+      <div class="section-label">如果他說「做得到」</div>
+      <div class="tip-block">
+        「那我們來試試看。如果你做到了，我相信你有能力管理自己的時間。」
+      </div>
+
+      <div class="section-label">如果他說「有時候做不到」</div>
+      <div class="tip-block">
+        「我欣賞你的誠實。那哪個部分最難做到？」
+      </div>
+    </div>
+  </div>
+
+  <!-- 問題四 -->
+  <div class="card teen12">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">🏡</div>
+        <div>
+          <div class="card-title">問題四</div>
+          <div class="card-subtitle">家庭貢獻（輕鬆版）</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「你覺得在我們家，你喜歡做什麼事來幫忙？有沒有什麼是你覺得做了很有成就感的？」</div>
+        <div class="question-note">讓他說他自己想做的，不是被分配任務</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結尾 -->
+  <div class="card teen12">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">🌟</div>
+        <div>
+          <div class="card-title">結尾</div>
+          <div class="card-subtitle">給他期待感</div>
+        </div>
+      </div>
+      <div class="time-badge">5 分</div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「我今天跟你說話很開心，你說的話我會認真考慮進去。我跟你哥也談過，我們會一起想出一個更好的方式。你相信我嗎？」</div>
+      </div>
+
+      <div class="section-label">這週觀察重點</div>
+      <div class="observe-item">
+        <div class="observe-label">他有自己的想法，還是跟著哥哥？</div>
+      </div>
+      <div class="observe-item">
+        <div class="observe-label">他「最想改的一件事」是什麼？</div>
+      </div>
+      <div class="observe-item">
+        <div class="observe-label">對三件事（作業、家事、閱讀）的反應？</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== TAB: 對談後 ===== -->
+<div class="page" id="tab-after">
+
+  <div class="after-card">
+    <h3>對談後的四個步驟</h3>
+    <ul>
+      <li>記錄他們說的關鍵字句，不靠記憶</li>
+      <li>跟太太分享對談內容</li>
+      <li>等 2–3 天再做決定，讓自己消化</li>
+      <li>告知孩子您已認真考慮他們的話</li>
+    </ul>
+  </div>
+
+  <!-- 記錄：15歲 -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">📝</div>
+        <div>
+          <div class="card-title">記錄：15 歲說了什麼</div>
+          <div class="card-subtitle">對談後填寫</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="section-label">他理想的一天</div>
+      <div style="background:#f8f8f8; border-radius:8px; padding:12px; min-height:60px; font-size:14px; color:#999;">在這裡記下他說的...</div>
+
+      <div class="section-label">他設計的規則</div>
+      <div style="background:#f8f8f8; border-radius:8px; padding:12px; min-height:60px; font-size:14px; color:#999; margin-top:8px;">在這裡記下他說的...</div>
+
+      <div class="section-label">他對媽媽負擔的反應</div>
+      <div style="background:#f8f8f8; border-radius:8px; padding:12px; min-height:40px; font-size:14px; color:#999; margin-top:8px;">在這裡記下他的反應...</div>
+
+      <div class="section-label">整體感受</div>
+      <div style="background:#f8f8f8; border-radius:8px; padding:12px; min-height:40px; font-size:14px; color:#999; margin-top:8px;">這次對談感覺如何？</div>
+    </div>
+  </div>
+
+  <!-- 記錄：12歲 -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">📝</div>
+        <div>
+          <div class="card-title">記錄：12 歲說了什麼</div>
+          <div class="card-subtitle">對談後填寫</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="section-label">他最想改的一件事</div>
+      <div style="background:#f8f8f8; border-radius:8px; padding:12px; min-height:40px; font-size:14px; color:#999;">在這裡記下他說的...</div>
+
+      <div class="section-label">他對三件事的反應</div>
+      <div style="background:#f8f8f8; border-radius:8px; padding:12px; min-height:40px; font-size:14px; color:#999; margin-top:8px;">做得到？哪個最難？</div>
+
+      <div class="section-label">他有自己的想法嗎？</div>
+      <div style="background:#f8f8f8; border-radius:8px; padding:12px; min-height:40px; font-size:14px; color:#999; margin-top:8px;">還是跟著哥哥走？</div>
+    </div>
+  </div>
+
+  <!-- 回饋給孩子 -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">💬</div>
+        <div>
+          <div class="card-title">幾天後告訴他們</div>
+          <div class="card-subtitle">讓他們知道您聽進去了</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="question-block">
+        <div class="question-text">「上次你說的話我都有認真考慮。我決定⋯⋯因為⋯⋯我知道這可能不是你想要的全部，但我希望你知道我有認真聽。」</div>
+      </div>
+      <div class="tip-block">
+        不管結果是否完全如他們所願，<br>讓他們知道您真的聽進去了，這很重要。
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['prep','teen15','teen12','after'][i] === name);
+  });
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.toggle('active', p.id === 'tab-' + name);
+  });
+  window.scrollTo(0, 0);
+}
+
+function toggleCard(header) {
+  const card = header.parentElement;
+  card.classList.toggle('open');
+}
+
+function toggleCheck(circle) {
+  circle.classList.toggle('checked');
+  const li = circle.parentElement;
+  li.classList.toggle('checked-item');
+  if (circle.classList.contains('checked')) {
+    circle.innerHTML = '✓';
+  } else {
+    circle.innerHTML = '';
+  }
+}
+</script>
+
+</body>
+</html>
